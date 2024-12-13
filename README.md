@@ -102,9 +102,6 @@ DESCRIBE candidates;
 - Go to _IAM dashboard_, add a new User. Then click on add permissions and grant the following two permissions - _AmazonTranscribeFullAccess_ and _AmazonS3FullAccess_.
 - Then under Security Credentials, click on _Create access key_ to get your credentials i.e,  'aws_access_key_id' and 'aws_secret_access_key'.
 
-![s3-bucket](screenshots/s3.PNG)
-
-
 **Step 5. Setting up IBM Watson for tone analysis**
 - Go to [IBM Cloud catalog](https://cloud.ibm.com/catalog), under category choose _AI / Machine Learning_. Then choose _Tone Analyzer_ service.
 - To create an instance of Tone Analyzer service, click on _Create_ on right hand side.
