@@ -121,7 +121,6 @@ In the same directory, create a local environment file
 (venv) $ nano .env    
 ```
 
-To get help on how to Set and Get Environment Variables in Python, visit [here](https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5).
 
 _Now You have to simply duplicate the __.env.sample__ file and just insert your credentials._
 
@@ -163,12 +162,6 @@ company_pswd = ""
 ```
 <br>
 
-
-__So, basically your project structure would look like:__
-
-![project](screenshots/structure.PNG)
-
-
 **Step 7: Run the server**
 
 Set the FLASK_APP environment variable.
@@ -179,15 +172,8 @@ Set the FLASK_APP environment variable.
 Now we're ready to start our flask server:
 ```
 (venv) $ flask run
-```
-Visit http://127.0.0.1:5000 to see your app in action
 
 <br>
-
-__To know more about how to set up a flask application on Windows, MacOS or Linux, visit [here](https://phoenixnap.com/kb/install-flask#ftoc-heading-12)__
-
-<br>
-
 
 # Snapshots
 
