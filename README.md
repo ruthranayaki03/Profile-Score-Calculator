@@ -54,7 +54,6 @@ If you don't have the virtualenv command yet, you can find installation [instruc
 ```
 $ pip install virtualenv
 ```
-
 Create a new Virtual Environment for the project and activate it.
 
 ```
