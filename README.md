@@ -1,6 +1,6 @@
 # Introduction
 
-ProfileScore Calculator: To automate the interview process.
+<h1>ProfileScore Calculator:</h1> To automate the interview process.
 
 ## Objective
 
@@ -67,7 +67,7 @@ Next, we need to install the project dependencies in this virtual environment, w
 ```
 (venv) $ pip install -r requirements.txt
 ```
-For NLP operations, the [resume parser](https://omkarpathak.in/pyresparser/) package uses spacy and nltk. Install them using below commands:
+For NLP operations, the package uses spacy and nltk. Install them using below commands:
 ```
 # spaCy
 python -m spacy download en_core_web_sm
@@ -75,8 +75,6 @@ python -m spacy download en_core_web_sm
 # nltk
 python -m nltk.downloader words
 ```
-
-
 **Step 3. Setup your database to store information of the candidates**
 
 Go to MySQL Command-Line Client, and login to the database server using the username and password. Then execute the below statements:
@@ -168,48 +166,3 @@ Set the FLASK_APP environment variable.
 Now we're ready to start our flask server:
 ```
 (venv) $ flask run
-
-<br>
-
-# Snapshots
-
-### Interviewee Sign Up page
-
-![signup](screenshots/firstpg.png)
-
-### Personality Prediction page
-
-![basicinfo](screenshots/pred.png)
-
-### Streaming Interview of the candidate
-
-![video-stream](screenshots/stream.png)
-
-### 'Thankyou for Taking Interview' Response page
-
-![thankyou](screenshots/thank-resp.PNG)
-
-### Interviewer Sign In page
-
-![signin](screenshots/firstpg(2).png)
-
-### Track candidates
-
-![profiles](screenshots/profiles.PNG)
-
-### Concise insights and summary of candidate profile
-
-![summary](screenshots/info.PNG)
-
-![summary](screenshots/info-2.PNG)
-
-### One-click mail to candidate
-
-![inform](screenshots/mailsent.png)
-
-### Mail to candidate
-
-![email](screenshots/email.PNG)
-
-
-
