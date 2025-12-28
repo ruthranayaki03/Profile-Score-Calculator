@@ -1,0 +1,47 @@
+# Django Framework
+Django>=4.2
+django-crispy-forms>=2.0
+crispy-bootstrap5>=0.7
+
+# Database
+mysqlclient>=2.1.0
+python-decouple>=3.8
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Machine Learning
+scikit-learn>=1.2.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Computer Vision & Video
+opencv-python>=4.7.0
+fer>=22.5.0
+
+# Resume Parsing
+pyresparser>=1.0.0
+spacy>=3.5.0
+nltk>=3.8.0
+
+# AWS Services
+boto3>=1.26.0
+
+# IBM Watson
+ibm-watson>=6.1.0
+ibm-cloud-sdk-core>=3.16.0
+
+# Background Tasks
+celery>=5.2.0
+redis>=4.5.0
+
+# Email
+django-environ>=0.10.0
+
+# Security
+python-dotenv>=1.0.0
+
