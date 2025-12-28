@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        min-height: calc(100vh - 200px);
+        background: var(--gradient-dark);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        padding: 6rem 0;
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-title .highlight {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--gray-400);
+        max-width: 600px;
+        margin-bottom: 2.5rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        border-radius: var(--radius-xl);
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .btn-outline-light-custom {
+        border: 2px solid var(--gray-600);
+        color: var(--gray-400);
+    }
+    
+    .btn-outline-light-custom:hover {
+        border-color: var(--white);
+        color: var(--white);
+        background: transparent;
+    }
+    
+    .hero-image {
+        position: relative;
+    }
+    
+    .hero-image img {
+        max-width: 100%;
+        border-radius: var(--radius-2xl);
+        box-shadow: var(--shadow-xl);
+    }
+    
+    .floating-card {
+        position: absolute;
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        padding: 1rem 1.5rem;
+        box-shadow: var(--shadow-xl);
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .floating-card-1 {
+        top: 20%;
+        left: -30px;
+        animation-delay: 0s;
+    }
+    
+    .floating-card-2 {
+        bottom: 20%;
+        right: -30px;
+        animation-delay: 1.5s;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    .feature-section {
+        padding: 6rem 0;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+        text-align: center;
+        color: var(--gray-600);
+        max-width: 600px;
+        margin: 0 auto 4rem;
+    }
+    
+    .feature-card {
+        text-align: center;
+        padding: 2.5rem;
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--radius-xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .feature-icon.primary { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+    .feature-icon.secondary { background: rgba(14, 165, 233, 0.1); color: var(--secondary); }
+    .feature-icon.accent { background: rgba(244, 114, 182, 0.1); color: var(--accent); }
+    .feature-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+    
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+    
+    .feature-description {
+        color: var(--gray-600);
+    }
+    
+    .cta-section {
+        background: var(--gradient-primary);
+        padding: 5rem 0;
+        text-align: center;
+    }
+    
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 1rem;
+    }
+    
+    .cta-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 2rem;
+    }
+    
+    .btn-white {
+        background: var(--white);
+        color: var(--primary);
+        padding: 1rem 2.5rem;
+        border-radius: var(--radius-xl);
+        font-weight: 600;
+    }
+    
+    .btn-white:hover {
+        background: var(--gray-100);
+        color: var(--primary-dark);
+        transform: translateY(-3px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6 fade-in">
+                <h1 class="hero-title">
+                    Hire <span class="highlight">Smarter</span> with AI-Powered Interviews
+                </h1>
+                <p class="hero-subtitle">
+                    Automate your hiring process with ML-based personality prediction, 
+                    video analysis, and comprehensive candidate insights.
+                </p>
+                <div class="hero-buttons">
+                    <a href="{% url 'register' %}" class="btn btn-primary-custom">
+                        <i class="fas fa-rocket me-2"></i> Start Interview
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light-custom">
+                        <i class="fas fa-sign-in-alt me-2"></i> HR Login
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-image fade-in fade-in-delay-2">
+                    <div class="floating-card floating-card-1">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon success me-3">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">95%</div>
+                                <small class="text-muted">Accuracy</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="floating-card floating-card-2">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon primary me-3">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">1000+</div>
+                                <small class="text-muted">Candidates</small>
+                            </div>
+                        </div>
+                    </div>
+                    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="40" y="20" width="320" height="200" rx="15" fill="#1e293b"/>
+                        <rect x="60" y="50" width="100" height="80" rx="8" fill="url(#grad1)" opacity="0.3"/>
+                        <circle cx="110" cy="90" r="25" fill="url(#grad1)"/>
+                        <rect x="180" y="60" width="160" height="10" rx="5" fill="#475569"/>
+                        <rect x="180" y="80" width="120" height="8" rx="4" fill="#334155"/>
+                        <rect x="180" y="100" width="140" height="8" rx="4" fill="#334155"/>
+                        <rect x="60" y="150" width="280" height="50" rx="8" fill="#334155"/>
+                        <circle cx="90" cy="175" r="15" fill="#10b981"/>
+                        <rect x="120" y="168" width="80" height="6" rx="3" fill="#475569"/>
+                        <rect x="120" y="180" width="60" height="4" rx="2" fill="#64748b"/>
+                        <rect x="250" y="165" width="70" height="25" rx="5" fill="url(#grad1)"/>
+                        <rect x="80" y="240" width="60" height="40" rx="5" fill="#6366f1"/>
+                        <rect x="160" y="250" width="60" height="30" rx="5" fill="#0ea5e9"/>
+                        <rect x="240" y="235" width="60" height="45" rx="5" fill="#10b981"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="feature-section">
+    <div class="container">
+        <h2 class="section-title fade-in">Powerful Features</h2>
+        <p class="section-subtitle fade-in">
+            Everything you need to streamline your hiring process and find the perfect candidates.
+        </p>
+        
+        <div class="row">
+            <div class="col-md-6 col-lg-3 fade-in fade-in-delay-1">
+                <div class="card-custom feature-card">
+                    <div class="feature-icon primary">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI Personality Prediction</h3>
+                    <p class="feature-description">
+                        ML-powered personality analysis using the Big Five (OCEAN) model
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in fade-in-delay-2">
+                <div class="card-custom feature-card">
+                    <div class="feature-icon secondary">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3 class="feature-title">Video Analysis</h3>
+                    <p class="feature-description">
+                        Face emotion recognition and tone analysis from video interviews
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in fade-in-delay-3">
+                <div class="card-custom feature-card">
+                    <div class="feature-icon accent">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Resume Parsing</h3>
+                    <p class="feature-description">
+                        Automatic extraction of skills, experience, and qualifications
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-in">
+                <div class="card-custom feature-card">
+                    <div class="feature-icon success">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="feature-title">One-Click Emails</h3>
+                    <p class="feature-description">
+                        Send acceptance or rejection emails with a single click
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title fade-in">Ready to Transform Your Hiring?</h2>
+        <p class="cta-subtitle fade-in">
+            Join thousands of companies using SmartHire to find the best talent.
+        </p>
+        <a href="{% url 'register' %}" class="btn btn-white fade-in">
+            <i class="fas fa-arrow-right me-2"></i> Get Started Free
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+

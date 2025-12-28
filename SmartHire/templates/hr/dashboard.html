@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}HR Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="page-title">
+                    <i class="fas fa-chart-line me-2 text-primary"></i> HR Dashboard
+                </h2>
+                <p class="page-subtitle">Monitor interviews and manage candidates</p>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-xl-3 mb-3 fade-in fade-in-delay-1">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Interviews</p>
+                            <h2 class="mb-0 fw-bold">{{ total_interviews }}</h2>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3 mb-3 fade-in fade-in-delay-2">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Pending Review</p>
+                            <h2 class="mb-0 fw-bold text-warning">{{ pending_interviews }}</h2>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3 mb-3 fade-in fade-in-delay-3">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Accepted</p>
+                            <h2 class="mb-0 fw-bold text-success">{{ accepted_count }}</h2>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3 mb-3 fade-in">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Rejected</p>
+                            <h2 class="mb-0 fw-bold text-danger">{{ rejected_count }}</h2>
+                        </div>
+                        <div class="stat-icon danger">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Recent Interviews -->
+            <div class="col-xl-8 mb-4 fade-in">
+                <div class="card-custom">
+                    <div class="card-header-custom d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2"></i> Recent Interviews
+                        </h5>
+                        <a href="{% url 'candidate_list' %}" class="btn btn-sm btn-light">
+                            View All <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_interviews %}
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Candidate</th>
+                                        <th>Position</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for interview in recent_interviews %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar me-3" style="width: 36px; height: 36px; font-size: 0.875rem;">
+                                                    {{ interview.candidate.first_name|slice:":1"|upper }}{{ interview.candidate.last_name|slice:":1"|upper }}
+                                                </div>
+                                                <div>
+                                                    <strong>{{ interview.candidate.get_full_name|default:interview.candidate.username }}</strong>
+                                                    <br><small class="text-muted">{{ interview.candidate.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ interview.position.title|default:"N/A" }}</td>
+                                        <td>
+                                            <span class="badge-status badge-{{ interview.status }}">
+                                                {{ interview.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>{{ interview.created_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <a href="{% url 'candidate_detail' interview.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No interviews yet</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions & Positions -->
+            <div class="col-xl-4 mb-4">
+                <!-- Quick Actions -->
+                <div class="card-custom mb-4 fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bolt me-2"></i> Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body p-3">
+                        <a href="{% url 'candidate_list' %}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-users me-2"></i> View All Candidates
+                        </a>
+                        <a href="{% url 'position_create' %}" class="btn btn-outline-success w-100 mb-2">
+                            <i class="fas fa-plus me-2"></i> Add New Position
+                        </a>
+                        <a href="{% url 'question_list' %}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-question-circle me-2"></i> Manage Questions
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Active Positions -->
+                <div class="card-custom fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-briefcase me-2"></i> Active Positions
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if positions %}
+                        <ul class="list-group list-group-flush">
+                            {% for position in positions %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ position.title }}</strong>
+                                    <br><small class="text-muted">{{ position.department }}</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">
+                                    {{ position.interviews.count }}
+                                </span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted mb-0">No active positions</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

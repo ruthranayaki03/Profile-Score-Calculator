@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Complete Your Profile{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card-custom fade-in">
+                    <div class="card-header-custom">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-edit me-2"></i> Complete Your Profile
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <!-- Personal Information -->
+                            <h5 class="mb-4 text-primary">
+                                <i class="fas fa-id-card me-2"></i> Personal Information
+                            </h5>
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">First Name</label>
+                                    {{ user_form.first_name }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Last Name</label>
+                                    {{ user_form.last_name }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Email</label>
+                                    {{ user_form.email }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    {{ user_form.phone }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Age</label>
+                                    {{ profile_form.age }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Gender</label>
+                                    {{ profile_form.gender }}
+                                </div>
+                            </div>
+                            
+                            <!-- Resume Upload -->
+                            <h5 class="mb-4 text-primary">
+                                <i class="fas fa-file-pdf me-2"></i> Resume
+                            </h5>
+                            <div class="row mb-4">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label fw-semibold">Upload Resume (PDF, DOC, DOCX)</label>
+                                    {{ profile_form.resume }}
+                                    <small class="text-muted d-block mt-1">
+                                        Your resume will be analyzed to extract skills, experience, and qualifications.
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <!-- Personality Assessment -->
+                            <h5 class="mb-4 text-primary">
+                                <i class="fas fa-brain me-2"></i> Personality Assessment (OCEAN Model)
+                            </h5>
+                            <p class="text-muted mb-4">
+                                Rate yourself on a scale of 1-10 for each personality trait. 
+                                This helps us predict your personality type using our ML model.
+                            </p>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card bg-light border-0 p-3">
+                                        <label class="form-label fw-semibold text-primary">
+                                            <i class="fas fa-lightbulb me-2"></i> Openness
+                                        </label>
+                                        <p class="small text-muted mb-2">
+                                            How much do you enjoy new experiences and ideas?
+                                        </p>
+                                        {{ profile_form.openness }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card bg-light border-0 p-3">
+                                        <label class="form-label fw-semibold text-primary">
+                                            <i class="fas fa-tasks me-2"></i> Conscientiousness
+                                        </label>
+                                        <p class="small text-muted mb-2">
+                                            How thorough and organized are you in your work?
+                                        </p>
+                                        {{ profile_form.conscientiousness }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card bg-light border-0 p-3">
+                                        <label class="form-label fw-semibold text-primary">
+                                            <i class="fas fa-users me-2"></i> Extraversion
+                                        </label>
+                                        <p class="small text-muted mb-2">
+                                            How outgoing and social are you?
+                                        </p>
+                                        {{ profile_form.extraversion }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card bg-light border-0 p-3">
+                                        <label class="form-label fw-semibold text-primary">
+                                            <i class="fas fa-handshake me-2"></i> Agreeableness
+                                        </label>
+                                        <p class="small text-muted mb-2">
+                                            How much do you value cooperation with others?
+                                        </p>
+                                        {{ profile_form.agreeableness }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card bg-light border-0 p-3">
+                                        <label class="form-label fw-semibold text-primary">
+                                            <i class="fas fa-heartbeat me-2"></i> Neuroticism
+                                        </label>
+                                        <p class="small text-muted mb-2">
+                                            How often do you experience negative emotions?
+                                        </p>
+                                        {{ profile_form.neuroticism }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'candidate_dashboard' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-save me-2"></i> Save & Continue to Interview
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

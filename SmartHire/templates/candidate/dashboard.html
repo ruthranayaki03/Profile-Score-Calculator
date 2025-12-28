@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card-custom p-4 fade-in">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar avatar-lg me-4">
+                                {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+                            </div>
+                            <div>
+                                <h2 class="page-title mb-1">Welcome back, {{ user.first_name|default:user.username }}!</h2>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                                </p>
+                            </div>
+                        </div>
+                        <a href="{% url 'candidate_start_interview' %}" class="btn btn-primary-custom">
+                            <i class="fas fa-video me-2"></i> Start New Interview
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-md-4 fade-in fade-in-delay-1">
+                <a href="{% url 'candidate_profile' %}" class="text-decoration-none">
+                    <div class="card-custom p-4 text-center">
+                        <div class="stat-icon primary mx-auto mb-3">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <h5 class="mb-1">Update Profile</h5>
+                        <p class="text-muted mb-0 small">Complete your information</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 fade-in fade-in-delay-2">
+                <a href="{% url 'candidate_start_interview' %}" class="text-decoration-none">
+                    <div class="card-custom p-4 text-center">
+                        <div class="stat-icon success mx-auto mb-3">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <h5 class="mb-1">Start Interview</h5>
+                        <p class="text-muted mb-0 small">Record video responses</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 fade-in fade-in-delay-3">
+                <div class="card-custom p-4 text-center">
+                    <div class="stat-icon warning mx-auto mb-3">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h5 class="mb-1">My Interviews</h5>
+                    <p class="text-muted mb-0 small">{{ interviews.count }} interview(s)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Status -->
+        {% if profile %}
+        <div class="row mb-4">
+            <div class="col-12 fade-in">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0"><i class="fas fa-user-check me-2"></i> Profile Status</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="{% if profile.resume %}text-success{% else %}text-muted{% endif %}">
+                                    <i class="fas fa-{% if profile.resume %}check-circle{% else %}circle{% endif %} fa-2x mb-2"></i>
+                                    <p class="mb-0 small">Resume Uploaded</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="{% if profile.openness %}text-success{% else %}text-muted{% endif %}">
+                                    <i class="fas fa-{% if profile.openness %}check-circle{% else %}circle{% endif %} fa-2x mb-2"></i>
+                                    <p class="mb-0 small">Personality Assessment</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="{% if profile.predicted_personality %}text-success{% else %}text-muted{% endif %}">
+                                    <i class="fas fa-{% if profile.predicted_personality %}check-circle{% else %}circle{% endif %} fa-2x mb-2"></i>
+                                    <p class="mb-0 small">Personality Predicted</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center mb-3">
+                                <div class="{% if interviews %}text-success{% else %}text-muted{% endif %}">
+                                    <i class="fas fa-{% if interviews %}check-circle{% else %}circle{% endif %} fa-2x mb-2"></i>
+                                    <p class="mb-0 small">Interview Completed</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if profile.predicted_personality %}
+                        <hr>
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-2">Predicted Personality Type</h6>
+                                <h4 class="text-primary mb-0">
+                                    <i class="fas fa-brain me-2"></i>{{ profile.predicted_personality }}
+                                </h4>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-2">Skills</h6>
+                                <p class="mb-0">{{ profile.skills|truncatewords:15|default:"Not extracted yet" }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Recent Interviews -->
+        <div class="row">
+            <div class="col-12 fade-in">
+                <div class="card-custom">
+                    <div class="card-header-custom d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-history me-2"></i> My Interviews</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if interviews %}
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for interview in interviews %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ interview.position.title|default:"N/A" }}</strong>
+                                            <br><small class="text-muted">{{ interview.position.department|default:"" }}</small>
+                                        </td>
+                                        <td>{{ interview.created_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="badge-status badge-{{ interview.status }}">
+                                                {{ interview.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'candidate_interview_status' interview.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-video fa-3x text-muted mb-3"></i>
+                            <h5>No interviews yet</h5>
+                            <p class="text-muted">Start your first interview to see it here.</p>
+                            <a href="{% url 'candidate_start_interview' %}" class="btn btn-primary-custom">
+                                <i class="fas fa-play me-2"></i> Start Interview
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

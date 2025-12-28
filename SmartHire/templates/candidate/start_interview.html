@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Start Interview{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-custom fade-in">
+                    <div class="card-header-custom text-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-video me-2"></i> Start Your Interview
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <div class="stat-icon primary mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <h5>Ready to begin?</h5>
+                            <p class="text-muted">
+                                You'll be asked {{ questions|length }} questions. Record your video response for each question.
+                            </p>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i> Interview Tips:</h6>
+                            <ul class="mb-0">
+                                <li>Ensure you have a stable internet connection</li>
+                                <li>Find a quiet place with good lighting</li>
+                                <li>Allow camera and microphone access when prompted</li>
+                                <li>Speak clearly and maintain eye contact with the camera</li>
+                                <li>Take your time to think before answering</li>
+                            </ul>
+                        </div>
+                        
+                        <form method="POST" action="{% url 'candidate_start_interview' %}">
+                            {% csrf_token %}
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Select Position</label>
+                                <select name="position" class="form-control form-control-custom" required>
+                                    <option value="">-- Select a Position --</option>
+                                    {% for position in positions %}
+                                    <option value="{{ position.id }}">
+                                        {{ position.title }} - {{ position.department }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="text-muted mb-3">Questions you'll be asked:</h6>
+                                <div class="list-group">
+                                    {% for q in questions %}
+                                    <div class="list-group-item">
+                                        <span class="badge bg-primary me-2">Q{{ forloop.counter }}</span>
+                                        {{ q.text }}
+                                    </div>
+                                    {% empty %}
+                                    <div class="list-group-item text-muted">
+                                        Questions will be displayed during the interview.
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                <input type="checkbox" class="form-check-input" id="consent" required>
+                                <label class="form-check-label" for="consent">
+                                    I consent to recording my video for this interview assessment.
+                                </label>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'candidate_dashboard' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Back
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-video me-2"></i> Begin Interview
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

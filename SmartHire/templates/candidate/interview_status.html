@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Status{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'candidate_dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Interview Status</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Status Card -->
+                <div class="card-custom mb-4 fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i> Interview Status
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="me-4">
+                                <span class="badge-status badge-{{ interview.status }}" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                                    {{ interview.get_status_display }}
+                                </span>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">{{ interview.position.title|default:"Position" }}</h5>
+                                <p class="text-muted mb-0">{{ interview.position.department|default:"Department" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="stat-icon primary mx-auto mb-2">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <p class="mb-0 text-muted small">Submitted On</p>
+                                <p class="fw-semibold mb-0">{{ interview.created_at|date:"M d, Y" }}</p>
+                            </div>
+                            {% if interview.evaluated_at %}
+                            <div class="col-md-4 mb-3">
+                                <div class="stat-icon success mx-auto mb-2">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <p class="mb-0 text-muted small">Evaluated On</p>
+                                <p class="fw-semibold mb-0">{{ interview.evaluated_at|date:"M d, Y" }}</p>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-4 mb-3">
+                                <div class="stat-icon warning mx-auto mb-2">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <p class="mb-0 text-muted small">Video Responses</p>
+                                <p class="fw-semibold mb-0">{{ interview.video_responses.count }} Questions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analysis Results (if available) -->
+                {% if interview.tone_analysis_image or interview.emotion_analysis_image %}
+                <div class="card-custom mb-4 fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i> Analysis Results
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            {% if interview.tone_analysis_image %}
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted mb-2">Tone Analysis</h6>
+                                <img src="{{ interview.tone_analysis_image.url }}" alt="Tone Analysis" class="img-fluid rounded">
+                            </div>
+                            {% endif %}
+                            {% if interview.emotion_analysis_image %}
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted mb-2">Emotion Analysis</h6>
+                                <img src="{{ interview.emotion_analysis_image.url }}" alt="Emotion Analysis" class="img-fluid rounded">
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Timeline -->
+                <div class="card-custom fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">
+                            <i class="fas fa-history me-2"></i> Timeline
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-success"></div>
+                                <div class="timeline-content">
+                                    <p class="fw-semibold mb-0">Interview Submitted</p>
+                                    <small class="text-muted">{{ interview.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                            {% if interview.status != 'pending' %}
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-primary"></div>
+                                <div class="timeline-content">
+                                    <p class="fw-semibold mb-0">Under Review</p>
+                                    <small class="text-muted">Processing your responses</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if interview.evaluated_at %}
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-{% if interview.status == 'accepted' %}success{% elif interview.status == 'rejected' %}danger{% else %}warning{% endif %}"></div>
+                                <div class="timeline-content">
+                                    <p class="fw-semibold mb-0">{{ interview.get_status_display }}</p>
+                                    <small class="text-muted">{{ interview.evaluated_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--gray-200);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: -26px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 3px solid var(--white);
+        box-shadow: var(--shadow);
+    }
+</style>
+{% endblock %}
+
+

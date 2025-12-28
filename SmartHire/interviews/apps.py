@@ -1,0 +1,14 @@
+from django.apps import AppConfig
+
+
+class InterviewsConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'interviews'
+    verbose_name = 'Interview Management'
+
+    def ready(self):
+        try:
+            import interviews.signals  # noqa
+        except ImportError:
+            pass
+
