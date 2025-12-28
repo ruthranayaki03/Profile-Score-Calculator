@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Complete{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-section {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        background: var(--gradient-dark);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .success-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.2) 0%, transparent 50%);
+    }
+    
+    .success-card {
+        background: var(--white);
+        border-radius: var(--radius-2xl);
+        padding: 4rem;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        box-shadow: var(--shadow-xl);
+    }
+    
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        animation: scaleIn 0.5s ease forwards;
+    }
+    
+    .success-icon i {
+        font-size: 4rem;
+        color: var(--success);
+    }
+    
+    @keyframes scaleIn {
+        from { transform: scale(0); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    
+    .success-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+    
+    .success-message {
+        font-size: 1.125rem;
+        color: var(--gray-600);
+        max-width: 500px;
+        margin: 0 auto 2rem;
+    }
+    
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        top: -10px;
+        animation: fall 3s linear infinite;
+    }
+    
+    @keyframes fall {
+        to { transform: translateY(100vh) rotate(720deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="success-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="success-card fade-in">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h1 class="success-title">Interview Complete!</h1>
+                    <p class="success-message">
+                        Thank you for completing your interview. Our team will review your responses 
+                        and get back to you via email within a few business days.
+                    </p>
+                    
+                    <div class="alert alert-info text-start mb-4">
+                        <h6><i class="fas fa-info-circle me-2"></i> What happens next?</h6>
+                        <ul class="mb-0 small">
+                            <li>Your video responses will be analyzed for tone and emotions</li>
+                            <li>Our HR team will evaluate your profile and responses</li>
+                            <li>You'll receive an email with the decision</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="{% url 'candidate_dashboard' %}" class="btn btn-primary-custom">
+                        <i class="fas fa-home me-2"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Confetti Effect -->
+<script>
+    const colors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#f472b6'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => confetti.remove(), 5000);
+    }
+</script>
+{% endblock %}
+
+

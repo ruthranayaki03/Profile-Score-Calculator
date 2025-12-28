@@ -1,0 +1,373 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Details{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'hr_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'candidate_list' %}">Candidates</a></li>
+                <li class="breadcrumb-item active">{{ interview.candidate.get_full_name }}</li>
+            </ol>
+        </nav>
+        
+        <div class="row">
+            <!-- Profile Card -->
+            <div class="col-lg-4 mb-4">
+                <div class="card-custom fade-in">
+                    <div class="card-header-custom text-center">
+                        <div class="avatar avatar-lg mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                            {{ interview.candidate.first_name|slice:":1"|upper }}{{ interview.candidate.last_name|slice:":1"|upper }}
+                        </div>
+                        <h4 class="mb-1">{{ interview.candidate.get_full_name }}</h4>
+                        <p class="mb-2 opacity-75">{{ interview.position.title|default:"N/A" }}</p>
+                        <span class="badge-status badge-{{ interview.status }}">
+                            {{ interview.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <p class="mb-2">
+                                <i class="fas fa-envelope text-primary me-2"></i>
+                                <a href="mailto:{{ interview.candidate.email }}">{{ interview.candidate.email }}</a>
+                            </p>
+                            {% if interview.candidate.phone %}
+                            <p class="mb-2">
+                                <i class="fas fa-phone text-primary me-2"></i>
+                                <a href="tel:{{ interview.candidate.phone }}">{{ interview.candidate.phone }}</a>
+                            </p>
+                            {% endif %}
+                            <p class="mb-0">
+                                <i class="fas fa-calendar text-primary me-2"></i>
+                                Applied: {{ interview.created_at|date:"M d, Y" }}
+                            </p>
+                        </div>
+                        
+                        <hr>
+                        
+                        {% if interview.candidate.profile %}
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-3">Profile Information</h6>
+                            {% if interview.candidate.profile.age %}
+                            <p class="mb-1"><strong>Age:</strong> {{ interview.candidate.profile.age }}</p>
+                            {% endif %}
+                            {% if interview.candidate.profile.gender %}
+                            <p class="mb-1"><strong>Gender:</strong> {{ interview.candidate.profile.get_gender_display }}</p>
+                            {% endif %}
+                            {% if interview.candidate.profile.degree %}
+                            <p class="mb-1"><strong>Degree:</strong> {{ interview.candidate.profile.degree }}</p>
+                            {% endif %}
+                            {% if interview.candidate.profile.designation %}
+                            <p class="mb-1"><strong>Designation:</strong> {{ interview.candidate.profile.designation }}</p>
+                            {% endif %}
+                            {% if interview.candidate.profile.total_experience %}
+                            <p class="mb-0"><strong>Experience:</strong> {{ interview.candidate.profile.total_experience }} years</p>
+                            {% endif %}
+                        </div>
+                        
+                        {% if interview.candidate.profile.predicted_personality %}
+                        <div class="alert alert-primary">
+                            <h6 class="mb-1"><i class="fas fa-brain me-2"></i> Predicted Personality</h6>
+                            <strong>{{ interview.candidate.profile.predicted_personality }}</strong>
+                        </div>
+                        {% endif %}
+                        
+                        {% if interview.candidate.profile.skills %}
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2">Skills</h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for skill in interview.candidate.profile.skills.split %}
+                                <span class="badge bg-light text-dark">{{ skill|cut:"," }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if interview.candidate.profile.resume %}
+                        <a href="{{ interview.candidate.profile.resume.url }}" class="btn btn-outline-primary w-100" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i> View Resume
+                        </a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Actions Card -->
+                <div class="card-custom mt-4 fade-in">
+                    <div class="card-body p-4">
+                        <h6 class="mb-3"><i class="fas fa-tasks me-2"></i> Actions</h6>
+                        
+                        {% if interview.status == 'completed' or interview.status == 'evaluated' %}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success-custom" id="btn-accept">
+                                <i class="fas fa-check-circle me-2"></i> Accept & Send Email
+                            </button>
+                            <button class="btn btn-danger-custom" id="btn-reject">
+                                <i class="fas fa-times-circle me-2"></i> Reject & Send Email
+                            </button>
+                        </div>
+                        {% elif interview.status == 'accepted' %}
+                        <div class="alert alert-success mb-0">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Candidate Accepted
+                            {% if interview.decision_email_sent %}
+                            <br><small>Email sent on {{ interview.decision_email_sent_at|date:"M d, Y H:i" }}</small>
+                            {% endif %}
+                        </div>
+                        {% elif interview.status == 'rejected' %}
+                        <div class="alert alert-danger mb-0">
+                            <i class="fas fa-times-circle me-2"></i>
+                            Candidate Rejected
+                            {% if interview.decision_email_sent %}
+                            <br><small>Email sent on {{ interview.decision_email_sent_at|date:"M d, Y H:i" }}</small>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-clock me-2"></i>
+                            Interview pending completion
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Analysis & Responses -->
+            <div class="col-lg-8">
+                <!-- Analysis Charts -->
+                {% if interview.tone_analysis_image or interview.emotion_analysis_image %}
+                <div class="card-custom mb-4 fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> Analysis Results</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            {% if interview.tone_analysis_image %}
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted mb-2">Tone Analysis</h6>
+                                <img src="{{ interview.tone_analysis_image.url }}" alt="Tone Analysis" class="img-fluid rounded shadow-sm">
+                            </div>
+                            {% endif %}
+                            {% if interview.emotion_analysis_image %}
+                            <div class="col-md-6 mb-3">
+                                <h6 class="text-muted mb-2">Emotion Analysis</h6>
+                                <img src="{{ interview.emotion_analysis_image.url }}" alt="Emotion Analysis" class="img-fluid rounded shadow-sm">
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if interview.confidence_score or interview.analytical_score %}
+                        <hr>
+                        <h6 class="text-muted mb-3">Overall Scores</h6>
+                        <div class="row text-center">
+                            {% if interview.confidence_score %}
+                            <div class="col-md-3 mb-3">
+                                <div class="stat-icon success mx-auto mb-2">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </div>
+                                <h4 class="mb-0">{{ interview.confidence_score|floatformat:1 }}%</h4>
+                                <small class="text-muted">Confidence</small>
+                            </div>
+                            {% endif %}
+                            {% if interview.analytical_score %}
+                            <div class="col-md-3 mb-3">
+                                <div class="stat-icon primary mx-auto mb-2">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h4 class="mb-0">{{ interview.analytical_score|floatformat:1 }}%</h4>
+                                <small class="text-muted">Analytical</small>
+                            </div>
+                            {% endif %}
+                            {% if interview.joy_score %}
+                            <div class="col-md-3 mb-3">
+                                <div class="stat-icon warning mx-auto mb-2">
+                                    <i class="fas fa-smile"></i>
+                                </div>
+                                <h4 class="mb-0">{{ interview.joy_score|floatformat:1 }}%</h4>
+                                <small class="text-muted">Joy</small>
+                            </div>
+                            {% endif %}
+                            {% if interview.fear_score %}
+                            <div class="col-md-3 mb-3">
+                                <div class="stat-icon danger mx-auto mb-2">
+                                    <i class="fas fa-frown"></i>
+                                </div>
+                                <h4 class="mb-0">{{ interview.fear_score|floatformat:1 }}%</h4>
+                                <small class="text-muted">Fear</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Video Responses -->
+                <div class="card-custom mb-4 fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0"><i class="fas fa-video me-2"></i> Interview Responses</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% for response in video_responses %}
+                        <div class="mb-4 pb-4 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div class="d-flex align-items-start mb-3">
+                                <span class="badge bg-primary me-3 p-2">Q{{ response.question_number }}</span>
+                                <div>
+                                    <h6 class="mb-1">{{ response.question.text|default:"Question" }}</h6>
+                                    {% if response.is_processed %}
+                                    <span class="badge bg-success"><i class="fas fa-check me-1"></i> Processed</span>
+                                    {% else %}
+                                    <span class="badge bg-warning"><i class="fas fa-clock me-1"></i> Processing</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if response.video_file %}
+                            <div class="mb-3">
+                                <video controls class="w-100 rounded" style="max-height: 300px;">
+                                    <source src="{{ response.video_file.url }}" type="video/webm">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            {% endif %}
+                            
+                            {% if response.transcribed_text %}
+                            <div class="bg-light rounded p-3">
+                                <h6 class="text-muted mb-2"><i class="fas fa-quote-left me-2"></i> Transcription</h6>
+                                <p class="mb-0">{{ response.transcribed_text }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if response.is_processed %}
+                            <div class="row mt-3">
+                                <div class="col-6 col-md-4 col-lg-2 text-center">
+                                    <small class="text-muted d-block">Confident</small>
+                                    <strong>{{ response.confident_tone|floatformat:1|default:0 }}%</strong>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-2 text-center">
+                                    <small class="text-muted d-block">Analytical</small>
+                                    <strong>{{ response.analytical_tone|floatformat:1|default:0 }}%</strong>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-2 text-center">
+                                    <small class="text-muted d-block">Joy</small>
+                                    <strong>{{ response.joy_tone|floatformat:1|default:0 }}%</strong>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-2 text-center">
+                                    <small class="text-muted d-block">Fear</small>
+                                    <strong>{{ response.fear_tone|floatformat:1|default:0 }}%</strong>
+                                </div>
+                                <div class="col-6 col-md-4 col-lg-2 text-center">
+                                    <small class="text-muted d-block">Tentative</small>
+                                    <strong>{{ response.tentative_tone|floatformat:1|default:0 }}%</strong>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-video fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No video responses yet</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- HR Notes -->
+                <div class="card-custom fade-in">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0"><i class="fas fa-sticky-note me-2"></i> HR Notes</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" action="{% url 'evaluate_interview' interview.id %}">
+                            {% csrf_token %}
+                            {{ evaluation_form.hr_notes }}
+                            <button type="submit" class="btn btn-primary-custom mt-3">
+                                <i class="fas fa-save me-2"></i> Save Notes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const csrfToken = '{{ csrf_token }}';
+    const interviewId = {{ interview.id }};
+    
+    const btnAccept = document.getElementById('btn-accept');
+    const btnReject = document.getElementById('btn-reject');
+    
+    if (btnAccept) {
+        btnAccept.addEventListener('click', async function() {
+            if (!confirm('Are you sure you want to accept this candidate and send the acceptance email?')) return;
+            
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Sending...';
+            
+            try {
+                const response = await fetch(`/hr/candidates/${interviewId}/accept/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('Candidate accepted! Email sent successfully.');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-check-circle me-2"></i> Accept & Send Email';
+                }
+            } catch (err) {
+                alert('Error sending email');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-check-circle me-2"></i> Accept & Send Email';
+            }
+        });
+    }
+    
+    if (btnReject) {
+        btnReject.addEventListener('click', async function() {
+            if (!confirm('Are you sure you want to reject this candidate and send the rejection email?')) return;
+            
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Sending...';
+            
+            try {
+                const response = await fetch(`/hr/candidates/${interviewId}/reject/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('Candidate rejected. Email sent successfully.');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-times-circle me-2"></i> Reject & Send Email';
+                }
+            } catch (err) {
+                alert('Error sending email');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-times-circle me-2"></i> Reject & Send Email';
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+

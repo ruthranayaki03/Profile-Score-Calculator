@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Positions{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h2 class="page-title">
+                    <i class="fas fa-briefcase me-2 text-primary"></i> Job Positions
+                </h2>
+                <p class="page-subtitle">Manage open positions for interviews</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="{% url 'position_create' %}" class="btn btn-primary-custom">
+                    <i class="fas fa-plus me-2"></i> Add Position
+                </a>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for position in positions %}
+            <div class="col-md-6 col-lg-4 mb-4 fade-in">
+                <div class="card-custom h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="mb-1">{{ position.title }}</h5>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-building me-1"></i> {{ position.department }}
+                                </p>
+                            </div>
+                            {% if position.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if position.description %}
+                        <p class="text-muted small">{{ position.description|truncatewords:20 }}</p>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-users me-1"></i> {{ position.interviews.count }} applicants
+                            </small>
+                            <a href="{% url 'position_update' position.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="card-custom">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-briefcase fa-4x text-muted mb-3"></i>
+                        <h5>No positions yet</h5>
+                        <p class="text-muted">Create your first job position to start receiving applications.</p>
+                        <a href="{% url 'position_create' %}" class="btn btn-primary-custom">
+                            <i class="fas fa-plus me-2"></i> Add Position
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
